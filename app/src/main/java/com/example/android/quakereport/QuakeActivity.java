@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.ListView;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -37,39 +38,39 @@ public class QuakeActivity extends AppCompatActivity {
         try{
             // Create JSONObject instance and give our data as argument
             JSONObject readQuakeData = new JSONObject(quakeDataUrl);
-            // Now that we have our instance and our data is read, get the desired data and store it in the following variables
-            mag = readQuakeData.getJSONArray("features").getJSONObject(0).getJSONObject("properties").getDouble("mag");
-            place = readQuakeData.getJSONArray("features").getJSONObject(0).getJSONObject("properties").getString("place");
-            int time  = readQuakeData.getJSONArray("features").getJSONObject(0).getJSONObject("properties").getInt("time");
-            // Casting the time into a String
-            timeString = String.valueOf(time);
-            // Creating a message for log to see if everything worked
-            String results = String.valueOf(mag) + " " + place + " " + timeString;
-            Log.v(LOG_TAG, results);
+            // Create our ArrayList of type EarthquakeInfo that will hold the data
+            ArrayList<EarthquakeInfo> earthquakes = new ArrayList<EarthquakeInfo>();
+            /**
+             * Loop through the 'features' array that holds the 'properties' objects
+             * Store the 3 bits of data that we need from each 'properties' JSON object form the array
+             * */
+            JSONArray features = readQuakeData.getJSONArray("features");
+            for(int i = 0; i < features.length(); i++) {
+                // Now that we have our instance and our data is read, get the desired data and store it in the following variables
+                mag = features.getJSONObject(i).getJSONObject("properties").getDouble("mag");
+                place = features.getJSONObject(i).getJSONObject("properties").getString("place");
+                int time  = features.getJSONObject(i).getJSONObject("properties").getInt("time");
+                // Casting the time into a String
+                timeString = String.valueOf(time);
+                // Creating a message for log to see if everything worked
+                String results = String.valueOf(mag) + " " + place + " " + timeString;
+                Log.v(LOG_TAG, results); // IT WORKED!
+                // add a new constructor for each 3 bits of data
+                earthquakes.add(new EarthquakeInfo(mag, place, timeString));
+            }
+            // Find a reference to the {@link ListView} in the layout
+            ListView earthquakeListView = (ListView) findViewById(R.id.list);
+
+            // Create a custom arrayAdapter
+            CustomArrayAdapter customAdapter = new CustomArrayAdapter(QuakeActivity.this, earthquakes);
+
+            // Set the adapter on the {@link ListView}
+            // so the list can be populated in the user interface
+            earthquakeListView.setAdapter(customAdapter);
         }
         // If try block doesn't run, run this (catch the error)
         catch (final JSONException e) {
             Log.e(LOG_TAG, "Something went wrong parsing the data");
         }
-        // Create a fake list of earthquake locations.
-        ArrayList<EarthquakeInfo> earthquakes = new ArrayList<EarthquakeInfo>();
-        earthquakes.add(new EarthquakeInfo(mag, place, timeString));
-        earthquakes.add(new EarthquakeInfo(6.1, "London", "July 20, 2016"));
-        earthquakes.add(new EarthquakeInfo(3.9, "Tokyo", "Nov 10, 2016"));
-        earthquakes.add(new EarthquakeInfo(5.4, "Mexico City", "May 3, 2016"));
-        earthquakes.add(new EarthquakeInfo(2.8, "Moscow", "Jan 31, 2016"));
-        earthquakes.add(new EarthquakeInfo(4.9, "Rio de Janeiro", "Aug 19, 2016"));
-        earthquakes.add(new EarthquakeInfo(1.6, "Paris", "Oct 30, 2016"));
-
-        // Find a reference to the {@link ListView} in the layout
-        ListView earthquakeListView = (ListView) findViewById(R.id.list);
-
-        // Create a custom arrayAdapter
-        CustomArrayAdapter customAdapter = new CustomArrayAdapter(QuakeActivity.this, earthquakes);
-
-        // Set the adapter on the {@link ListView}
-        // so the list can be populated in the user interface
-        earthquakeListView.setAdapter(customAdapter);
-
     }
 }
