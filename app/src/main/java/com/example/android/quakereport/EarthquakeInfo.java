@@ -1,7 +1,7 @@
 package com.example.android.quakereport;
 
 public class EarthquakeInfo {
-    /** Earthquake states - it will have a magnitude, a date and a place */
+    /** Earthquake states - it will have a magnitude, a date, a place, url */
     private double mMag;
     private long mDate;
     private String mPlace;

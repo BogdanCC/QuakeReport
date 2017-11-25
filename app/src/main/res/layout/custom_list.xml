@@ -68,5 +68,4 @@
                     android:textColor="@color/textColorEarthquakeDetails"
                     />
         </LinearLayout>
-
 </LinearLayout>

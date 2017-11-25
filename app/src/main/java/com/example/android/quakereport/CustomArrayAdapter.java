@@ -100,7 +100,7 @@ public class CustomArrayAdapter extends ArrayAdapter<EarthquakeInfo> {
     public int getMagnitudeColor(double magnitude){
         // We need to cast the magnitude into an int, because getmMag() will return a double - we only need int
         int mag = (int) magnitude;
-        //
+        // Integer to store the color id
         int magnitudeColor;
         switch (mag) {
             case 0 : magnitudeColor = R.color.magnitude1; break;
@@ -114,6 +114,7 @@ public class CustomArrayAdapter extends ArrayAdapter<EarthquakeInfo> {
             case 9 : magnitudeColor = R.color.magnitude9; break;
             default: magnitudeColor = R.color.magnitude10plus;
         }
+        // Return color id
         return magnitudeColor;
     }
 }
