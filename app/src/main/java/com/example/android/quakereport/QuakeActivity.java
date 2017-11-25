@@ -1,8 +1,12 @@
 package com.example.android.quakereport;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import org.json.JSONArray;
@@ -18,7 +22,8 @@ public class QuakeActivity extends AppCompatActivity {
     double mag;
     String place;
     String timeString;
-
+    long time;
+    String quakeUrl;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,7 +44,7 @@ public class QuakeActivity extends AppCompatActivity {
             // Create JSONObject instance and give our data as argument
             JSONObject readQuakeData = new JSONObject(quakeDataUrl);
             // Create our ArrayList of type EarthquakeInfo that will hold the data
-            ArrayList<EarthquakeInfo> earthquakes = new ArrayList<EarthquakeInfo>();
+            final ArrayList<EarthquakeInfo> earthquakes = new ArrayList<EarthquakeInfo>();
             /**
              * Loop through the 'features' array that holds the 'properties' objects
              * Store the 3 bits of data that we need from each 'properties' JSON object form the array
@@ -49,24 +54,36 @@ public class QuakeActivity extends AppCompatActivity {
                 // Now that we have our instance and our data is read, get the desired data and store it in the following variables
                 mag = features.getJSONObject(i).getJSONObject("properties").getDouble("mag");
                 place = features.getJSONObject(i).getJSONObject("properties").getString("place");
-                int time  = features.getJSONObject(i).getJSONObject("properties").getInt("time");
-                // Casting the time into a String
-                timeString = String.valueOf(time);
+                time  = features.getJSONObject(i).getJSONObject("properties").getLong("time");
+                quakeUrl = features.getJSONObject(i).getJSONObject("properties").getString("url");
                 // Creating a message for log to see if everything worked
                 String results = String.valueOf(mag) + " " + place + " " + timeString;
                 Log.v(LOG_TAG, results); // IT WORKED!
                 // add a new constructor for each 3 bits of data
-                earthquakes.add(new EarthquakeInfo(mag, place, timeString));
+                earthquakes.add(new EarthquakeInfo(mag, place, time, quakeUrl));
             }
             // Find a reference to the {@link ListView} in the layout
-            ListView earthquakeListView = (ListView) findViewById(R.id.list);
+            final ListView earthquakeListView = (ListView) findViewById(R.id.list);
 
             // Create a custom arrayAdapter
-            CustomArrayAdapter customAdapter = new CustomArrayAdapter(QuakeActivity.this, earthquakes);
+            final CustomArrayAdapter customAdapter = new CustomArrayAdapter(QuakeActivity.this, earthquakes);
 
             // Set the adapter on the {@link ListView}
             // so the list can be populated in the user interface
             earthquakeListView.setAdapter(customAdapter);
+            // Set a click listener on the list items to go to the appropriate url
+            earthquakeListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                    // Creating a new Intent object.
+                    Intent goToUrl = new Intent(Intent.ACTION_VIEW);
+                    // Giving the information to the newly created intent - in this case is the url String for the earthquakes
+                    goToUrl.setData(Uri.parse(earthquakes.get(i).getQuakeUrl()));
+                    // Now the activity can start
+                    startActivity(goToUrl);
+                    Log.v(LOG_TAG, "Item listener: " + i + "; URL: " + earthquakes.get(i).getQuakeUrl());
+                }
+            });
         }
         // If try block doesn't run, run this (catch the error)
         catch (final JSONException e) {

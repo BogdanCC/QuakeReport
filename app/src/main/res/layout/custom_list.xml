@@ -1,27 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="horizontal"
-    android:padding="16dp"
-    >
+    android:padding="16dp">
+        <!-- Magnitude TextView, circle as background -->
         <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_height="36dp"
+            android:layout_width="36dp"
+            android:gravity="center"
+            android:layout_gravity="center_vertical"
             android:id="@+id/mag_text_view"
+            android:background="@drawable/circle"
+            tools:text="8.2"
+            android:fontFamily="sans-serif-medium"
+            android:textColor="@android:color/white"
+            android:layout_marginRight="16dp"
             />
-        <TextView
-            android:layout_width="0dp"
+        <!-- Layout to hold the 2 place TextViews vertically -->
+        <LinearLayout
+            style="@style/custom_list_text_row"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            >
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/place_text_view"
+                    tools:text="30 km of"
+                    android:textColor="@color/textColorEarthquakeDetails"
+                    android:maxLines="1"
+                    android:fontFamily="sans-serif-medium"
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/place_text_view2"
+                    tools:text="@tools:sample/cities"
+                    android:textColor="@color/textColorEarthquakeLocation"
+                    android:maxLines="2"
+                    android:textSize="16sp"
+                    />
+        </LinearLayout>
+        <!-- LinearLayout to hold the 2 date&time textViews -->
+        <LinearLayout
             android:layout_height="wrap_content"
-            android:layout_weight="2"
-            android:id="@+id/place_text_view"
-            />
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="2"
-            android:id="@+id/date_text_view"
-            />
+            android:layout_width="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
+            android:orientation="vertical"
+            >
+                <!-- Date text view -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/date_text_view"
+                    tools:text="Feb 16, 2016"
+                    android:textColor="@color/textColorEarthquakeDetails"
+                    />
+                <!-- Time text view -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/time_text_view"
+                    tools:text="12:32 pm"
+                    android:textColor="@color/textColorEarthquakeDetails"
+                    />
+        </LinearLayout>
+
 </LinearLayout>
